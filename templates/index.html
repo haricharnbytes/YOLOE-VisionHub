@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero-Shot Vision Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Zero-Shot Vision Engine</h1>
+            <p>Prompt-driven object detection and segmentation powered by YOLOE-26.</p>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+            {% for message in messages %}
+              <div class="flash-alert">{{ message }}</div>
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <section class="upload-section">
+            <form action="/detect" method="POST" enctype="multipart/form-data" class="vision-form">
+                
+                <div class="form-group">
+                    <label for="file">1. Upload your image</label>
+                    <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg, .webp" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="prompts">2. What should the model look for?</label>
+                    <input type="text" name="prompts" id="prompts" 
+                           placeholder="e.g., camera rig, studio light, laptop, coffee cup" 
+                           value="{{ prompts if prompts else '' }}" required>
+                    <small>Separate multiple objects with commas.</small>
+                </div>
+                
+                <button type="submit" class="btn-submit">Run Inference</button>
+            </form>
+        </section>
+
+        {% if output_image %}
+        <section class="results-section">
+            <h2>Detection Results</h2>
+            <div class="prompts-badge">
+                <strong>Prompts Used:</strong> {{ prompts }}
+            </div>
+            
+            <div class="image-comparison">
+                <div class="image-card">
+                    <h3>Original</h3>
+                    <img src="{{ url_for('static', filename='uploads/' + input_image) }}" alt="Original Input Image">
+                </div>
+                <div class="image-card">
+                    <h3>YOLOE-26 Output</h3>
+                    <img src="{{ url_for('static', filename='uploads/' + output_image) }}" alt="Annotated Output Image">
+                </div>
+            </div>
+        </section>
+        {% endif %}
+        
+    </div>
+</body>
+</html>
