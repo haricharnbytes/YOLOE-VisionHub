@@ -4,4 +4,3 @@ opencv-python-headless>=4.9.0
 torch
 torchvision
 git+https://github.com/openai/CLIP.git
-    
